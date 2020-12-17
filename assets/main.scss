@@ -1,0 +1,44 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+body {
+    font-size: 14px;
+}
+
+blockquote {
+    font-size: 16px;
+}
+
+.wrapper {
+    max-width: calc(1200px - (30px * 2));
+}
+
+.left-column-image {
+    float: left;
+    padding-right: 40px;
+    padding-bottom: 40px;
+
+    &--small {
+        width: 250px;
+    }
+    
+    &--medium {
+        width: 300px;
+    }
+}
+
+.block-with-image-container {
+    overflow:hidden;
+    margin:auto;
+
+    &--narrow {
+        max-width:800px;
+    }
+
+    &--medium {
+        max-width:1000px;
+    }
+}
