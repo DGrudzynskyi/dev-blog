@@ -27,7 +27,7 @@ Let’s look on a couple of definitions:
 
 <div class="block-with-image-container block-with-image-container--narrow">
   <img 
-    src="/assets/2020-12-17/layered.png" 
+    src="{{site.baseurl}}/assets/2020-12-17/layered.png" 
     alt="From Eric Evans book “Taking Complexity into the heart of the software” (page 74):" 
     class='left-column-image left-column-image--small'
     />
@@ -40,7 +40,7 @@ Let’s look on a couple of definitions:
 
 <div class="block-with-image-container block-with-image-container--narrow">
   <img 
-    src="/assets/2020-12-17/palermo-layers.png" 
+    src="{{site.baseurl}}/assets/2020-12-17/palermo-layers.png" 
     alt="Jeffrey Palermo, describing layers in his initial article introducing term ‘onion’. https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" 
     class='left-column-image  left-column-image--small'/>
   <p>
@@ -56,7 +56,7 @@ Let’s look on a couple of definitions:
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
-      src="/assets/2020-12-17/layered-seeman.png" 
+      src="{{site.baseurl}}/assets/2020-12-17/layered-seeman.png" 
       alt="Mark Seeman in the “Dependency Injection in .NET”, chapter 2, draw layers without something called infrastructure" 
       class='left-column-image left-column-image--medium'
   />
@@ -85,7 +85,7 @@ To sum up, there are:
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
-    src="/assets/2020-12-17/ports-adapters.png" 
+    src="{{site.baseurl}}/assets/2020-12-17/ports-adapters.png" 
     alt="Ports and Adapters (Hexagonal) architecture by Alistair Cockburn" 
     class='left-column-image left-column-image--medium'
     />
@@ -114,7 +114,7 @@ So far you may realize that although the _ports and adapters_ does not give us a
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
-      src="/assets/2020-12-17/palermo-onion.png" 
+      src="{{site.baseurl}}/assets/2020-12-17/palermo-onion.png" 
       alt="Onion, defined by Jeffrey Palermo" 
       class='left-column-image left-column-image--medium'
   />
@@ -133,7 +133,7 @@ Some authors unfold the _infrastructure_ in onion architecture and provide the m
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
-      src="/assets/2020-12-17/CleanArchitecture.jpg" 
+      src="{{site.baseurl}}/assets/2020-12-17/CleanArchitecture.jpg" 
       alt="Clean Architecture by Robert Martin" 
       class='left-column-image left-column-image--medium'
   />
@@ -165,7 +165,7 @@ I am skeptical about including any of these things into the language itself, but
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
-      src="/assets/2020-12-17/onion-with-language.png" 
+      src="{{site.baseurl}}/assets/2020-12-17/onion-with-language.png" 
       alt="Onion architecture mentioning language within the core" 
       class='left-column-image left-column-image--medium'
   />
