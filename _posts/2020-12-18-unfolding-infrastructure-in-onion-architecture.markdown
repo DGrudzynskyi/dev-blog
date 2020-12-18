@@ -7,11 +7,11 @@ tags: architecture, onion, ports-and-adapters, hexagonal, layered, coreutils, cl
 ---
 
 ### 1. Preface: where to place my code?
-Through the mine developer experience, every rails-style application (.net MVC, spring MVC, whatever) had a folder (or project), called “Utils”. Or “Tools”. Or “Helpers”.
-Or some other very generic name with unknown purpose – up until I had opened this project and looked onto the code. Sometimes there are two or more projects like that, written by different generations/teams of software developers. Application might be formally split into layers following ‘layered’ or ‘onion’ architecture, but these folders are referenced from everywhere. And sometimes they want to reference each other, which is no-op due to potential circular dependency.
+Through the mine developer experience, every rails-style application (.net MVC, spring MVC, whatever) has a folder/project called “Utils”. Or “Tools”. Or “Helpers”.
+Or some other very generic name with unknown purpose – up until I open this project and look onto the code. Sometimes there are two or more projects like that, written by different generations/teams of software developers. Application might be formally split into layers following _layered_ or _onion_ architecture, but these folders are referenced from everywhere. And sometimes they want to reference each other, which is no-op due to potential circular dependency.
 
 Through the mine developer experience, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.
-This happens for a good reason: frameworks usually have detailed manuals explaining how to fit the simple application in it. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific decisions. Worse than that, some of these decisions are counter-intuitive and have obvious flaws, but very abstract gain, which might or might not be observed in far future.
+This happens for a good reason: frameworks usually have detailed manuals explaining how to fit the simple application in it. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific choices. Worse than that, some of these decisions are counter-intuitive and have obvious flaws but very abstract gain, which might or might not be observed in far future.
 What is common about two paragraphs above? 
 
 One of such decisions is the decision about the code, highly reused by _whole_ application including the _domain_ objects.
@@ -19,8 +19,8 @@ One of such decisions is the decision about the code, highly reused by _whole_ a
 - This is what drives the creation of ‘Utils’/’Tools’/’Helpers’ projects by people who try to be pragmatic.
 - This is what drives an interfaces nightmare and makes newcomers mad about the thousands of classes if application architect is a purist, trying to keep domain model independent of anything.
 
-In this article I am talking about approaching this task in _layered_, _onion_ and _ports and adapters_ architectures. I will start from the _layered_ architecture (which is considered being outdated nowadays) and make a transition into more modern _onion_ and _ports and adapters_. 
-The purpose of the article is to eliminate an uncertainty in answering to ‘where should I place my commonly reused code?’.
+In this article I am approaching this task in _layered_, _onion_ and _ports and adapters_ architectures. I will start from the _layered_ architecture (which is considered being outdated nowadays) and make a transition into more modern _onion_ and _ports and adapters_. 
+The purpose of the article is to eliminate an uncertainty in answering to _“where should I place my commonly reused code?”_.
 
 ### 2. Layered architecture. ‘Infrastructure’:
 Let’s look on a couple of definitions:
