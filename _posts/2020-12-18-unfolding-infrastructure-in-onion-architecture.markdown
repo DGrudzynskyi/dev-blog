@@ -1,20 +1,20 @@
 ---
 layout: post
 title:  "Unfolding infrastructure in onion architecture"
-date:   2020-12-17 19:15:49 +0200
+date:   2020-12-18
 categories: architecture
 tags: architecture, onion, ports-and-adapters, hexagonal, layered, coreutils, clean, infrastructure
 ---
 
-### 1. Where to place my code?
-**Through the mine developer experience, every rails-style application (.net MVC, spring MVC, whatever) had a folder (or project), called “Utils”. Or “Tools”. Or “Helpers”.**
+### 1. Preface: where to place my code?
+Through the mine developer experience, every rails-style application (.net MVC, spring MVC, whatever) had a folder (or project), called “Utils”. Or “Tools”. Or “Helpers”.
 Or some other very generic name with unknown purpose – up until I had opened this project and looked onto the code. Sometimes there are two or more projects like that, written by different generations/teams of software developers. Application might be formally split into layers following ‘layered’ or ‘onion’ architecture, but these folders are referenced from everywhere. And sometimes they want to reference each other, which is no-op due to potential circular dependency.
 
-**Through the mine developer experience, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.**
+Through the mine developer experience, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.
 This happens for a good reason: frameworks usually have detailed manuals explaining how to fit the simple application in it. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific decisions. Worse than that, some of these decisions are counter-intuitive and have obvious flaws, but very abstract gain, which might or might not be observed in far future.
 What is common about two paragraphs above? 
 
-One of such decisions is the decision about the code, highly reused by ‘whole’ application including the ‘domain’ objects.
+One of such decisions is the decision about the code, highly reused by _whole_ application including the _domain_ objects.
 
 - This is what drives the creation of ‘Utils’/’Tools’/’Helpers’ projects by people who try to be pragmatic.
 - This is what drives an interfaces nightmare and makes newcomers mad about the thousands of classes if application architect is a purist, trying to keep domain model independent of anything.
@@ -61,7 +61,7 @@ Let’s look on a couple of definitions:
       class='left-column-image left-column-image--medium'
   />
     <p>
-      Mark Seeman in the “Dependency Injection in .NET”, chapter 2, draw layers without something called “infrastructure”, effectively bypassing this piece of the software as well. He only focusing on analysis of ‘data access’ as a crucial piece of infrastructure.
+      Mark Seeman in the “Dependency Injection in .NET”, chapter 2, draw layers without something called “infrastructure”, effectively bypassing this piece of the software as well. He only focusing on analysis of <i>data access</i> as a crucial piece of infrastructure.
     </p>
     <p>
 The quick essence of that chapter is given in the Mark’s <a herf='https://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/'>article</a>. This article also nicely aligns <i>layered</i>, <i>onion</i>, and <i>ports and adapters</i> architectures, so i recomment you to read it before proceeding with current article.
@@ -148,7 +148,7 @@ Note that onion architecture does care about the inner application structure. An
 -	Pattern of interaction between the four layers of framework – this is handled using dependency injection plus extraction of the **composition roots** to the outer most circle.
 -	‘and so on’ – Well, here is why this article is written :)
 
-### 4. Have we caught all our boundaries in the outer-most circle of onion? 
+### 4. Have we caught all boundaries in the outer-most circle of onion? 
 By definition of onion, our core (domain model) has no dependencies.
 
 But does it?
@@ -180,7 +180,7 @@ I am skeptical about including any of these things into the language itself, but
   </p>
 </div>
 
-### 5. What if my language Sucks?
+### 5. What if my language sucks?
 
 We are freely using the API provided to us by our _language_. And all layers of application toughly bound to this API.
 Then what if some _essential_ or _dumb as heck_ features are missing from language?  
@@ -205,33 +205,58 @@ I would call the set of such patches to language as a **CoreUtils**. Might not b
 |_Infrastructure_ parts in layered architecture|Corresponding _onion_ parts|
 |---|---|
 |Code, related to application boundaries|Interface in the _inner circles_ of onion, implementation in the _outer circle_ of onion|
-|Pattern of interaction between the four layers of framework|IoC container usage and placing composition roots in the outer circles of onion.|
-|Commonly reused functions, neither related to boundaries, nor to interaction between layers|CoreUtils|
+|Pattern of interaction between the four layers of framework|IoC container usage with composition roots placed in the outer-most circle of onion.|
+|Commonly reused functions not related to application boundaries or interaction between layers|CoreUtils|
+
+### 6. CoreUtils – what to include?
+It is obvious that everything placed in the _CoreUtils_ become carved in stone for application. Whatever is placed here shall be changed as rare as the language version is being changed.
+
+Below is the list of criteria I use to move the functional to the _CoreUtils_ project/folder. 
+It might be replaced by single statement _“you should only use pure functions respecting dependency rule”_ but explicit list seems more descriptive to me.
+
+1.	Functional shall neither be special to application nor to the platform this application runs within. So, nothing specific to _web_ or _desktop_ or _mobile_ or _sql_ or _blockchain_ or _finance_ or _medicine_.
+2.	Functional must not be configurable. E.g., functions shall not behave differently in different environments.
+3.	Functional must not know about any of application boundaries. It subsequently should neither be an SDK for communications with external resources nor it shall use such SDK.
+4.	The one I am not sure yet: functional should be stateless. Every need for specific data structure I have ever experienced was about adding this data structure as a part of my domain or adding application-specific objects. However, I can think of the case when one might need to add some math extensions to JS or C# code. And such extensions might need special data structures (e.g. matrices). If you decide to add some data structure/stateful object to this layer – think twice whether such state is platform-agnostic, domain-agnostic and is not going to be used as a configuration.
+5.	You may reference external libraries as a part of ‘CoreUtils’ as long as they satisfy provided criteria. For example, for JavaScript: 
+  -	lodash – yes. 
+  -	DateFNS – yes. 
+  -	MomentJS – no. Because it can be configured with the locale. 
+  -	React – no. Because it is specific to UI rendering.
 
 
+### 7. Epilogue: tiny example - working with dates in JavaScript.
+
+Consider work with dates in regular JS SPA front-end. You may want to do adding/subtracting on dates, formatting the dates to human-readable form, formatting the dates to API-readable form, parsing the dates.
+
+Adding/subtracting of dates is perfectly manageable within the _CoreUtils_. My choice – just by importing the dateFNS and using addDays function all over the application without any specific wrapper.
+However, formatting the dates for API is an interaction with _API boundary_. And formatting the dates to user is an interaction with _UI boundary_. 
+So, we would rather end up with two interfaces in the Application Services layer (note: much depends on your app. I can see _IUIDatesFormatter_ even being a part of Domain Services as domain logic might rely on _what user sees_ for some special apps):
 
 
+{% highlight typescript %}
+interface IAPIDatesFormatter {
+    parseDate(apiStringifiedDate: string): Date;
+    formatDate(date: Date): string;
+}
 
-
-
-
-
-
-
-Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
-
-Jekyll also offers powerful support for code snippets:
-
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+interface IUIDatesFormatter {
+    formatDate(date: Date, customFormat?: string);
+    parseDate (uiDateRepresentation: string, customFormat?: string): Date;
+}
 {% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
 
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+_IAPIDateFormatter_ implementation must know about the way, API want to receive the date objects. Would it be UTC timestamp, or it should be sent with user’s timezone offset? With offset, set in the global runtime configuration? It totally depends on the logic of your application and on the logic of the web server.
+
+Formatting of the dates to user then remains totally unaffected by the decision made by the technical team working on the API. Instead, it may be driven by aesthetic feelings of your customer as well as by necessity to display dates in timezone of user choice.
+
+However, neither of these two must become a part of the _CoreUtils_ because both highly depends on the _boundaries_, our application works within.
+
+### Conclusion:
+
+I hope this article helps you to develop a proper coding discipline across the team and justify the necessity of additional interfaces for functions, related to application boundaries. 
+
+I hope that presence of _CoreUtils_ in the solution helps you to avoid an excessive interfaces creation. This might be the way to reconcile between ‘architecture purists’ and poor developers who just want to get the shit done.
+
+Just make sure that guidance and restrictions for putting something into _CoreUtils_ are clear and accepted by whole team. It is extremely important in order to avoid falling into the burden, happened to term _Infrastructure_ long time ago.
