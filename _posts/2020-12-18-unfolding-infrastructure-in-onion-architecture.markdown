@@ -12,6 +12,7 @@ Or some other very generic name with unknown purpose – up until I open this pr
 
 Through the mine developer experience, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.
 This happens for a good reason: frameworks usually have detailed manuals explaining how to fit the simple application in. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific choices. Worse than that, some of these decisions are counter-intuitive and have obvious flaws but very abstract gain, which might or might not be observed in far future.
+
 What is common about two paragraphs above? 
 
 One of such decisions is the decision about the code, highly reused by _whole_ application including the _domain_ objects.
