@@ -18,8 +18,9 @@ blockquote {
 
 .left-column-image {
     float: left;
-    padding-right: 40px;
-    padding-bottom: 40px;
+    padding-right: 2vw;
+    padding-bottom: 4vh;
+    max-width: 50%;
 
     &--small {
         width: 250px;
@@ -41,4 +42,9 @@ blockquote {
     &--medium {
         max-width:1000px;
     }
+}
+
+#commento{
+    max-width: 800px;
+    margin: auto;
 }

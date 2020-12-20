@@ -1,27 +1,33 @@
 ---
 layout: post
-title:  "Unfolding infrastructure in onion architecture"
+title:  "Unfolding infrastructure in the Onion architecture"
 date:   2020-12-18
 categories: architecture
 tags: architecture, onion, ports-and-adapters, hexagonal, layered, coreutils, clean, infrastructure
 ---
 
+- _Stuck trying to figure out where to place your code without tricking an existing **software architecture**?_
+- _Feels like the presence of the **architecture** drives an embarrassment across the team?_
+- _Project's codebase just screams about complete rewrite due to outdated dependencies? What if the presence of the **architecture** could have saved it..._
+
+If you've ever found yourself frustrated with any of the above items - this article is for you.
+
 ### 1. Preface: where to place my code?
-Through the mine developer experience, every rails-style application (.net MVC, spring MVC, whatever) has a folder/project called “Utils”. Or “Tools”. Or “Helpers”.
+Throughout my developer career, every rails-style application (.net MVC, spring MVC, whatever) has a folder/project called “Utils”. Or “Tools”. Or “Helpers”.
 Or some other very generic name with unknown purpose – up until I open this project and look onto the code. Sometimes there are two or more projects like that, written by different generations/teams of software developers. Application might be formally split into layers following _layered_ or _onion_ architecture, but these folders are referenced from everywhere. And sometimes they want to reference each other, which is no-op due to potential circular dependency.
 
-Through the mine developer experience, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.
-This happens for a good reason: frameworks usually have detailed manuals explaining how to fit the simple application in. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific choices. Worse than that, some of these decisions are counter-intuitive and have obvious flaws but very abstract gain, which might or might not be observed in far future.
+Throughout my developer career, I have argued a lot about the necessity of application architecture. Occasionally, developers just deny the need of architecture by means, wider than the chosen framework apply.
+This happens for a good reason: frameworks usually have detailed manuals explaining how to fit a simple application in. In the opposite side of spectrum, description of _layered_ or _onion_ or _ports-and-adapters(hexagonal)_ architectures just gives us a wide picture and require making some project-specific choices. Worse than that, some of these choices are counter-intuitive and have obvious flaws but very abstract gain, which might or might not be observed in far future.
 
 What is common about two paragraphs above? 
 
-One of such decisions is the decision about the code, highly reused by _whole_ application including the _domain_ objects.
+One of such choices is the decision about the code, highly reused by _whole_ application including the _domain_ objects.
 
-- This is what drives the creation of ‘Utils’/’Tools’/’Helpers’ projects by people who try to be pragmatic.
-- This is what drives an interfaces nightmare and makes newcomers mad about the thousands of classes if application architect is a purist, trying to keep domain model independent of anything.
+- This is what drives the creation of ‘Utils’/’Tools’/’Helpers’ projects by the people who try to be pragmatic.
+- This is what drives an interfaces nightmare and makes newcomers mad about the thousands of classes in case application architect is a purist, who is trying to keep the domain model isolated from anything.
 
 In this article I am approaching this task in _layered_, _onion_ and _ports and adapters_ architectures. I will start from the _layered_ architecture (which is considered being outdated nowadays) and make a transition into more modern _onion_ and _ports and adapters_. 
-The purpose of the article is to eliminate an uncertainty in answering to _“where should I place my commonly reused code?”_.
+The purpose of the article is to eliminate an uncertainty while answering to _“where should I place my commonly reused code?”_.
 
 ### 2. Layered architecture. ‘Infrastructure’:
 Let’s look on a couple of definitions:
@@ -210,10 +216,24 @@ I would call the set of such patches to language as a **CoreUtils**. Might not b
 |Commonly reused functions not related to application boundaries or interaction between layers|CoreUtils|
 
 ### 6. CoreUtils – what to include?
-It is obvious that everything placed in the _CoreUtils_ become carved in stone for application. Whatever is placed here shall be changed as rare as the language version is being changed.
 
-Below is the list of criteria I use to move the functional to the _CoreUtils_ project/folder. 
-It might be replaced by single statement _“you should only use pure functions respecting dependency rule”_ but explicit list seems more descriptive to me.
+<div class="block-with-image-container block-with-image-container--medium">
+  <img 
+      src="{{site.baseurl}}/assets/2020-12-17/onion-with-core-utils.png" 
+      alt="Onion architecture mentioning language and utils within the core" 
+      class='left-column-image left-column-image--medium'
+  />
+  <p>
+    It is obvious that everything placed in the <i>CoreUtils</i> become carved in stone for application. Whatever is placed here shall be changed as rare as the language version is being changed.
+  </p>
+  <p>
+    Below is the list of criteria I use to move the functional to the <i>CoreUtils</i> project/folder. 
+  </p>
+  <p>
+    It might be replaced by single statement <i>“you should only use pure functions respecting dependency rule”</i> but explicit list seems more descriptive to me.
+  </p>
+</div>
+
 
 1.	Functional shall neither be special to application nor to the platform this application runs within. So, nothing specific to _web_ or _desktop_ or _mobile_ or _sql_ or _blockchain_ or _finance_ or _medicine_.
 2.	Functional must not be configurable. E.g., functions shall not behave differently in different environments.
@@ -230,7 +250,7 @@ It might be replaced by single statement _“you should only use pure functions 
 
 Consider work with dates in regular JS SPA front-end. You may want to do adding/subtracting on dates, formatting the dates to human-readable form, formatting the dates to API-readable form, parsing the dates.
 
-Adding/subtracting of dates is perfectly manageable within the _CoreUtils_. My choice – just by importing the dateFNS and using addDays function all over the application without any specific wrapper.
+Adding/subtracting of dates is perfectly manageable within the _CoreUtils_. My choice is just to import the dateFNS library and use addDays function all over the application without any specific wrapper.
 However, formatting the dates for API is an interaction with _API boundary_. And formatting the dates to user is an interaction with _UI boundary_. 
 So, we would rather end up with two interfaces in the Application Services layer (note: much depends on your app. I can see _IUIDatesFormatter_ even being a part of Domain Services as domain logic might rely on _what user sees_ for some special apps):
 
@@ -248,16 +268,16 @@ interface IUIDatesFormatter {
 {% endhighlight %}
 
 
-_IAPIDateFormatter_ implementation must know about the way, API want to receive the date objects. Would it be UTC timestamp, or it should be sent with user’s timezone offset? With offset, set in the global runtime configuration? It totally depends on the logic of your application and on the logic of the web server.
+_IAPIDateFormatter_ implementation must know how API wants to receive the date objects. Would it be UTC timestamp, or should it be sent with user’s timezone offset? With the offset, set in the global runtime configuration? It totally depends on a logic of the application and on a logic of the web server.
 
-Formatting of the dates to user then remains totally unaffected by the decision made by the technical team working on the API. Instead, it may be driven by aesthetic feelings of your customer as well as by necessity to display dates in timezone of user choice.
+Formatting of the dates to user then remains totally unaffected by the decision made by the technical team working on the API. Instead, it may be driven by aesthetic feelings of the customer as well as by necessity to display dates in a timezone of user choice.
 
-However, neither of these two must become a part of the _CoreUtils_ because both highly depends on the _boundaries_, our application works within.
+However, neither of these two services must become a part of the _CoreUtils_ because both highly depend on the _boundaries_, our application works within.
 
 ### Conclusion:
 
-I hope this article helps you to develop a proper coding discipline across the team and justify the necessity of additional interfaces for functions, related to application boundaries. 
+I hope this article helps you to develop proper coding discipline across the team and justify the necessity of additional interfaces for functions, related to application boundaries. 
 
-I hope that presence of _CoreUtils_ in the solution helps you to avoid an excessive interfaces creation. This might be the way to reconcile between ‘architecture purists’ and poor developers who just want to get the shit done.
+I hope that presence of _CoreUtils_ in the solution helps you to avoid an excessive interfaces creation. This might be the way to reconcile between the ‘architecture purists’ and poor developers who just want to get the shit done.
 
-Just make sure that guidance and restrictions for putting something into _CoreUtils_ are clear and accepted by whole team. It is extremely important in order to avoid falling into the burden, happened to term _Infrastructure_ long time ago.
+Just make sure that guidance and restrictions for putting something into _CoreUtils_ are clear and accepted by whole team. It is extremely important in order to avoid falling into a burden, happened to the term _Infrastructure_ long time ago.
