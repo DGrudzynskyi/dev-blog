@@ -7,8 +7,8 @@ tags: architecture, onion, ports-and-adapters, hexagonal, layered, coreutils, cl
 ---
 
 - _Stuck trying to figure out where to place your code without tricking an existing **software architecture**?_
-- _Feels like the presence of the **architecture** drives an embarrassment across the team?_
-- _Project's codebase just screams about complete rewrite due to outdated dependencies? What if the presence of the **architecture** could have saved it..._
+- _Feels like presence of the **architecture** drives an embarrassment across the team?_
+- _Project's codebase just screams about complete rewrite due to an outdated dependencies? What if presence of the **architecture** could have saved it..._
 
 If you've ever found yourself frustrated with any of the above items - this article is for you.
 
