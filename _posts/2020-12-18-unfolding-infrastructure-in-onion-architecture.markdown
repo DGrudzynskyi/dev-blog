@@ -156,7 +156,7 @@ Note that onion architecture does care about the inner application structure. An
 -	‘and so on’ – Well, here is why this article is written :)
 
 ### 4. Have we caught all boundaries in the outer-most circle of onion? 
-By definition of onion, our core (domain model) has no dependencies.
+By definition of the _Onion_, our **core** (domain model) has no dependencies.
 
 But does it?
 
@@ -166,9 +166,9 @@ Let me once again cite Robert Martin from another <a href='https://blog.cleancod
 Every framework you’ve ever seen is really just an echo of this statement:
 -	My language sucks!
 
-I would argue with the point that every framework is an attempt to improve the language – rather it is an attempt to adopt the language to programming models/principles, not present in this language natively. Such as spring has grown as DI framework/IoC container (and then suddenly grown into swiss knife of java world but who cares). RxJava is designed to account for the reactive programming. 
+I would argue with the point that every framework is an attempt to improve the language – rather it is an attempt to adopt the language to programming models/principles, not present in this language natively. Such as Spring has grown as DI framework/IoC container (and then suddenly grown into swiss knife of java world but who cares). RxJava is designed to account for the reactive programming. 
 
-I am skeptical about including any of these things into the language itself, but you might accept the R. Martin’s definition. It does not matter. 
+I am skeptical about including any of these into the language itself, but you might accept the R. Martin’s definition. It does not matter. 
 
 <div class="block-with-image-container block-with-image-container--medium">
   <img 
@@ -177,13 +177,13 @@ I am skeptical about including any of these things into the language itself, but
       class='left-column-image left-column-image--medium'
   />
   <p>
-    What matters is that this quote might make you suspicious <i>whether your core is truly isolated as it is written using the language</i>. And this language has its features. Sometimes special or unique (like expressions in C# or pointers in C), sometimes – widely adopted by many different languages: (data structures support, dates management, class/interface inheritance). 
+    What matters is that this quote might make you suspicious <i>whether your core is truly isolated</i>. It is written using the <b>language</b>. And this language has its features. Sometimes special or unique (like expressions in C# or pointers in C), sometimes – widely adopted by many different languages: (data structures support, dates management, class/interface inheritance). 
   </p>
   <p>
-    And the core of application already depends on this set of features, so-called <b>language</b>. So, to be honest to himself, one should take the favorite sort of onion and put the <i>language</i> to the center of it. I am doing it to mine like that:
+    And the core of application already depends on this set of features, so-called <i>language</i>. So, to be honest to himself, one should take the favorite sort of the onion and put the <i>language</i> to the center of it. I am doing it to mine like that:
   </p>
   <p>
-    There is no emphasis on the outer circles of onion. You may replace <i>Application Services</i> with <i>Use Cases/Ports</i> if it seems more relevant for you. You may split <i>Domain model</i> into <i>Domain Entities/Domain Services</i>.
+    There is no emphasis on the outer circles of onion. One may replace <i>Application Services</i> with <i>Use Cases/Ports</i> if it better suites the application. One may split <i>Domain model</i> into <i>Domain Entities/Domain Services</i> as well.
   </p>
 </div>
 
@@ -197,13 +197,13 @@ Do you really want to abuse the constructors of your domain models with the _IAr
 There are two downsides with extracting such function sets into interfaces:
 1.	Adding extra complexity. The more logical items you have the more complexity you have. 
 2.	Such _stateless/dependency-less_ services are mixed up with stateful dependencies and other dependencies, which assumes the application boundary invocation. As soon as there are more than 5-6 dependencies in the service – its constructor become hard to read. So, it is hard to quickly understand the responsibility of the service by analyzing its dependencies.
-3.	It’s become even harder because our _logical dependencies_ being messed up with the _language patches_, only needed to add an essential feature to the language itself.
+3.	It’s become even harder because our _logical dependencies_ are being messed up with the _language patches_, only needed to add an essential feature to the language itself.
 
 Then the common benefits of DIP are negated:
-1.	Ability to replace an implementation of interface – negated by the fact that as soon as you developed patch to language (such as add function for adding dates) and test it - there are no more meaningful reasons for changing it other than performance. And if (for some reason) you find out that performance should be boosted – there are no reason to re-write whole implementation of the IDateUtils. Rather, single method to be optimized within the same class.
+1.	Ability to replace an implementation of interface – negated by the fact that as soon as you developed patch to language (such as add method for adding dates) and test it - there are no more meaningful reasons for changing it other than performance. And if (for some reason) you find out that performance should be boosted – there is no reason to re-write whole implementation of the IDateUtils. Rather, the method to be optimized within the already created class.
 2.	Ability to re-configure the dependencies of these utility classes without falling into poor man DI – negated by the fact that there are zero dependencies in such _language patch_ function libraries.
 
-From there, I came up to the conclusion that for the _language patches_ I don’t want to extract the implementations to the outer circle of the onion because it harms more than helps. I don’t want to define interfaces either as these items have no particular reason for change.
+From there, I came up to the conclusion that for the _language patches_ I don’t want to extract implementations to the outer circle of the onion because it harms more than helps. I don’t want to define interfaces either as these items have no particular reason for change.
 
 I would call the set of such patches to language as a **CoreUtils**. Might not be the best name ever, so feel free to suggest the better naming in comments. 
 
