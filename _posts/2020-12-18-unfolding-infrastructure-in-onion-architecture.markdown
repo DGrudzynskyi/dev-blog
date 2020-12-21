@@ -189,29 +189,29 @@ I am skeptical about including any of these things into the language itself, but
 
 ### 5. What if my language sucks?
 
-We are freely using the API provided to us by our _language_. And all layers of application toughly bound to this API.
+We are freely using the API provided to us by our _language_. And all layers of application are toughly bound to this API.
 Then what if some _essential_ or _dumb as heck_ features are missing from language?  
 <quote>“Let’s talk about JavaScript” (©. Gary Bernhardt)</quote>
 
 Do you really want to abuse the constructors of your domain models with the _IArrayUtils_ or _IDateUtils_ function libraries only because JavaScript is unable to natively add dates or join arrays?
 There are two downsides with extracting such function sets into interfaces:
 1.	Adding extra complexity. The more logical items you have the more complexity you have. 
-2.	Such _stateless/dependency-less_ services are mixed up with stateful dependencies and other dependencies, which assuming application boundary invocation. As soon as there are more than 5-6 dependencies in the service – its constructor become hard to read. So, it is hard to quickly understand the responsibility of service by analyzing its dependencies.
+2.	Such _stateless/dependency-less_ services are mixed up with stateful dependencies and other dependencies, which assumes the application boundary invocation. As soon as there are more than 5-6 dependencies in the service – its constructor become hard to read. So, it is hard to quickly understand the responsibility of the service by analyzing its dependencies.
 3.	It’s become even harder because our _logical dependencies_ being messed up with the _language patches_, only needed to add an essential feature to the language itself.
 
 Then the common benefits of DIP are negated:
-1.	Ability to replace an implementation of interface – negated by the fact that as soon as you developed patch to language (such as add function for adding dates) and test it - there are no more meaningful reasons for changing it other than performance. And if (for some reason) you find out that performance should be boosted – there are no reason to re-write all method in the IDateUtils and replace it. Rather, single method to be optimized within the same class.
+1.	Ability to replace an implementation of interface – negated by the fact that as soon as you developed patch to language (such as add function for adding dates) and test it - there are no more meaningful reasons for changing it other than performance. And if (for some reason) you find out that performance should be boosted – there are no reason to re-write whole implementation of the IDateUtils. Rather, single method to be optimized within the same class.
 2.	Ability to re-configure the dependencies of these utility classes without falling into poor man DI – negated by the fact that there are zero dependencies in such _language patch_ function libraries.
 
 From there, I came up to the conclusion that for the _language patches_ I don’t want to extract the implementations to the outer circle of the onion because it harms more than helps. I don’t want to define interfaces either as these items have no particular reason for change.
 
 I would call the set of such patches to language as a **CoreUtils**. Might not be the best name ever, so feel free to suggest the better naming in comments. 
 
-**CoreUtils** is what I would place instead of the _‘and so on’_ part in the Eric Evans’s description of layered architecture. So if we compare _infrastructure_ of the layered architecture with the _pieces of onion_ we would end with:
+**CoreUtils** is what I would place instead of the _‘and so on’_ part in the Eric Evans’s description of layered architecture. So if we compare the _infrastructure_ of the layered architecture with the _pieces of onion_ we would end with:
 
 |_Infrastructure_ parts in layered architecture|Corresponding _onion_ parts|
 |---|---|
-|Code, related to application boundaries|Interface in the _inner circles_ of onion, implementation in the _outer circle_ of onion|
+|Code, related to the application boundaries|Interface in the _inner circles_ of onion, implementation in the _outer circle_ of onion|
 |Pattern of interaction between the four layers of framework|IoC container usage with composition roots placed in the outer-most circle of onion.|
 |Commonly reused functions not related to application boundaries or interaction between layers|CoreUtils|
 
@@ -224,7 +224,7 @@ I would call the set of such patches to language as a **CoreUtils**. Might not b
       class='left-column-image left-column-image--medium'
   />
   <p>
-    It is obvious that everything placed in the <i>CoreUtils</i> become carved in stone for application. Whatever is placed here shall be changed as rare as the language version is being changed.
+    It is obvious that everything placed in the <i>CoreUtils</i> become carved in stone for an application. Whatever is placed here shall be changed as rare as the language version is being changed.
   </p>
   <p>
     Below is the list of criteria I use to move the functional to the <i>CoreUtils</i> project/folder. 
@@ -235,10 +235,10 @@ I would call the set of such patches to language as a **CoreUtils**. Might not b
 </div>
 
 
-1.	Functional shall neither be special to application nor to the platform this application runs within. So, nothing specific to _web_ or _desktop_ or _mobile_ or _sql_ or _blockchain_ or _finance_ or _medicine_.
+1.	Functional shall neither be special to the application nor to the platform this application runs within. So, nothing specific to _web_ or _desktop_ or _mobile_ or _sql_ or _blockchain_ or _finance_ or _medicine_.
 2.	Functional must not be configurable. E.g., functions shall not behave differently in different environments.
-3.	Functional must not know about any of application boundaries. It subsequently should neither be an SDK for communications with external resources nor it shall use such SDK.
-4.	The one I am not sure yet: functional should be stateless. Every need for specific data structure I have ever experienced was about adding this data structure as a part of my domain or adding application-specific objects. However, I can think of the case when one might need to add some math extensions to JS or C# code. And such extensions might need special data structures (e.g. matrices). If you decide to add some data structure/stateful object to this layer – think twice whether such state is platform-agnostic, domain-agnostic and is not going to be used as a configuration.
+3.	Functional must not know about any of the application boundaries. It subsequently should neither be an SDK for communications with external resources nor it shall use such SDK.
+4.	The one I am not sure yet: functional should be stateless. Every need for specific data structure I have ever experienced was about adding this data structure as a part of my domain model or adding application-specific objects. However, I can think of the case when one might need to add some math extensions to JS or C# code. And such extensions might need special data structures (e.g. matrices). If you decide to add some data structure/stateful object to this layer – think twice whether it is platform-agnostic, domain-agnostic and is not going to be used as a configuration.
 5.	You may reference external libraries as a part of ‘CoreUtils’ as long as they satisfy provided criteria. For example, for JavaScript: 
   -	lodash – yes. 
   -	DateFNS – yes. 
