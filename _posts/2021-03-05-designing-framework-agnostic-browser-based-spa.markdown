@@ -22,7 +22,7 @@ This article shows how the UI could be built based on the high-level design patt
 
 #### Goals:
 1. New developer can take a brief look on the code structure and get an intent of application
-2. Force developers to follow sepation of concerns and thereby force the code to be modular so:
+2. Force developers to sepation of concerns and thereby force the code to be modular so:
   1. When we do some nasty hacking OR want to integrate with external boundary - code does not spill through multiple files and therefore it's replacement become a realistic task rather then "abstract long-term refactoring".
   2. Modules are testable
 3. Force logically related things to be located close to each other in the folders structure and avoid the need to search for very related code in very distant folders. Check the <a href='https://martinfowler.com/bliki/PresentationDomainDataLayering.html'>article</a> covering the differences between the code separation by *technical tier* rather than by *functional responsibility*.
@@ -53,7 +53,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
 <div class="block-with-image-container block-with-image-container--narrow">
   <div class='image-with-legend-container'>
     <img 
-        src="/assets/2021-03-05/napkin-store.png" 
+        src="{{site.baseurl}}/assets/2021-03-05/napkin-store.png" 
         alt="Typical online shop structure, drawn on a napkin"
     />
     <br />
@@ -62,7 +62,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
 
   <div class='image-with-legend-container image-with-legend-container--small image-with-legend-container--left'>
     <img 
-        src="/assets/2021-03-05/structure-with-pages.png"
+        src="{{site.baseurl}}/assets/2021-03-05/structure-with-pages.png"
         alt="top level presentation codebase structure" 
     />  
     <span class='image-legend'>Figure 2: top level folders structure, which reflects logical structure from figure 1</span>
@@ -76,7 +76,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
 
   <div class='image-with-legend-container image-with-legend-container--small image-with-legend-container--right'>
     <img 
-      src="/assets/2021-03-05/structure-with-pages-parts.png"
+      src="{{site.baseurl}}/assets/2021-03-05/structure-with-pages-parts.png"
       alt="placing page sub-parts within the 'parts' folder" 
     />  
   <span class='image-legend'>Figure 3: placing page sub-parts within the 'parts' folder</span>
@@ -90,7 +90,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
   
   <div class='image-with-legend-container image-with-legend-container--small image-with-legend-container--left'>
   <img 
-    src="/assets/2021-03-05/structure-with-pages-no-parts.png"
+    src="{{site.baseurl}}/assets/2021-03-05/structure-with-pages-no-parts.png"
     alt="hoist page sub-parts from the 'parts' folders" 
   />  
   <span class='image-legend'>Figure 4: hoist the sub-parts from the 'parts' folders</span>
@@ -104,7 +104,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
   
   <div class='image-with-legend-container image-with-legend-container--small image-with-legend-container--right'>
     <img 
-        src="/assets/2021-03-05/structure-components2.png"
+        src="{{site.baseurl}}/assets/2021-03-05/structure-components2.png"
         alt="application of the underscore to distinguish between the part and it's subparts" 
     />  
     <span class='image-legend'>Figure 5: application of the underscore to distinguish between the part and it's subparts</span>
@@ -193,7 +193,7 @@ With these targets in mind, let's define following logical pieces code units:
 <div class="block-with-image-container block-with-image-container--medium">
   <div class='image-with-legend-container'>
     <img 
-      src="/assets/2021-03-05/intended-code-diagram.png" 
+      src="{{site.baseurl}}/assets/2021-03-05/intended-code-diagram.png" 
       alt="desired design of presentation layer"
     />
     <br />
@@ -210,7 +210,7 @@ With these targets in mind, let's define following logical pieces code units:
 <div class="block-with-image-container block-with-image-container--medium">
   <div class='image-with-legend-container image-with-legend-container--right' style='width:400px'>
     <img 
-      src="/assets/2021-03-05/intended-code-diagram-widget-attrs.png" 
+      src="{{site.baseurl}}/assets/2021-03-05/intended-code-diagram-widget-attrs.png" 
       alt="passing attributes to viewmodel"
     />
     <br />
@@ -406,7 +406,7 @@ What's important is that implementation shall be done in conjunction with the im
 <div class="block-with-image-container block-with-image-container--medium">
   <div class='image-with-legend-container image-with-legend-container--right' style='width:400px'>
     <img 
-      src="/assets/2021-03-05/intended-code-diagram-widget-attrs-and-connect.png" 
+      src="{{site.baseurl}}/assets/2021-03-05/intended-code-diagram-widget-attrs-and-connect.png" 
       alt="passing the component's attributes to the slicing function"
     />
     <br />
