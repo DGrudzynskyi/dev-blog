@@ -19,7 +19,6 @@ blockquote {
 .left-column-image {
     float: left;
     padding-right: 2vw;
-    padding-bottom: 4vh;
     max-width: 50%;
 
     &--small {
@@ -31,7 +30,56 @@ blockquote {
     }
 }
 
+.right-column-image {
+    float: right;
+    padding-left: 2vw;
+    max-width: 50%;
+
+    &--small {
+        width: 250px;
+    }
+    
+    &--medium {
+        width: 300px;
+    }
+}
+
+.image-with-legend-container {
+    text-align: center;    
+    
+    
+
+    &--small {
+        width: 250px;
+    }
+    
+    &--medium {
+        width: 300px;
+    }
+
+    &--right {
+        float: right;
+        padding-left: 40px;
+        max-width: 50%;
+
+        & + p {
+            clear: left;
+        }
+    }
+
+    &--left {
+        float: left;
+        padding-right: 40px;
+        max-width: 50%;
+
+        & + p {
+            clear: right;
+        }
+    }
+}
+
 .block-with-image-container {
+    padding-bottom: 4vh;
     overflow:hidden;
     margin:auto;
 
@@ -47,4 +95,25 @@ blockquote {
 #commento{
     max-width: 800px;
     margin: auto;
+}
+
+.image-legend{
+    color: gray;
+    font-style: italic;
+    font-size: 0.9em;
+    margin-bottom: 1em;
+    display: block;
+}
+
+p a {
+    font-weight: bold;
+}
+
+.post-content li a {
+    font-weight: bold;
+}
+
+.hint {
+    color: gray;
+    font-style: italic;
 }
