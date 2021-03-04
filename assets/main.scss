@@ -19,7 +19,6 @@ blockquote {
 .left-column-image {
     float: left;
     padding-right: 40px;
-    padding-bottom: 40px;
 
     &--small {
         width: 250px;
@@ -27,6 +26,49 @@ blockquote {
     
     &--medium {
         width: 300px;
+    }
+}
+
+.right-column-image {
+    float: right;
+    padding-left: 40px;
+
+    &--small {
+        width: 250px;
+    }
+    
+    &--medium {
+        width: 300px;
+    }
+}
+
+.image-with-legend-container {
+    text-align: center;
+
+    &--small {
+        width: 250px;
+    }
+    
+    &--medium {
+        width: 300px;
+    }
+
+    &--right {
+        float: right;
+        padding-left: 40px;
+
+        & + p {
+            clear: left;
+        }
+    }
+
+    &--left {
+        float: left;
+        padding-right: 40px;
+
+        & + p {
+            clear: right;
+        }
     }
 }
 
@@ -41,4 +83,27 @@ blockquote {
     &--medium {
         max-width:1000px;
     }
+
+    padding-bottom: 40px;
+}
+
+.image-legend{
+    color: gray;
+    font-style: italic;
+    font-size: 0.9em;
+    margin-bottom: 1em;
+    display: block;
+}
+
+p a {
+    font-weight: bold;
+}
+
+.post-content li a {
+    font-weight: bold;
+}
+
+.hint {
+    color: gray;
+    font-style: italic;
 }
