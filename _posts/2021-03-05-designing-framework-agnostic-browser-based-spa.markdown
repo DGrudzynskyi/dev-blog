@@ -23,11 +23,11 @@ This article shows how the UI could be built based on the high-level design patt
 #### Goals:
 1. New developer can take a brief look on the code structure and get an intent of application
 2. Force developers to sepation of concerns and thereby force the code to be modular so:
-  1. When we do some nasty hacking OR want to integrate with external boundary - code does not spill through multiple files and therefore it's replacement become a realistic task rather then "abstract long-term refactoring".
-  2. Modules are testable
+    1. When we do some nasty hacking OR want to integrate with <a href='https://dgrudzynskyi.github.io/dev-blog/architecture/2020/12/18/unfolding-infrastructure-in-onion-architecture.html#3-ports-and-adapters-architecture-what-is-there'>external boundary</a> - code does not spill through multiple files and therefore it's replacement become a realistic task rather then "abstract long-term refactoring".
+    2. Modules are testable
 3. Force logically related things to be located close to each other in the folders structure and avoid the need to search for very related code in very distant folders. Check the <a href='https://martinfowler.com/bliki/PresentationDomainDataLayering.html'>article</a> covering the differences between the code separation by *technical tier* rather than by *functional responsibility*.
 4. Account for loose coupling between modules so changes to implementation details of particular module (or replacement of this module) do not affect other modules as long as interfaces are met
-5. Mechanics chosen for modules integration does not introduce inaccepatble permormance issues.
+5. Mechanics chosen for modules integration does not introduce inaccepatable performance issues.
 6. Dependencies on particular libraries are not spilling through the whole codebase, but being manageable within a limited amount of codebase, responsible for integration with such a libraries/frameworks.
 
 #### Limitations:
@@ -42,7 +42,7 @@ So these applications could simply bypass *Domain* layer entirely and have a tin
 
 Subsequently, the most convenient way to understand the intent and the purpose of such an application is to get an overall picture of the presentation-related code.
 
-Hovewer, this article keeps presence of the other layers in mind and describes mechanics for using the *domain-* and *application-*level functions/classes if your application have such a layer(s).
+Hovewer, this article describes mechanics for usage of the *domain-* and *application-*level functions/classes if your application have such a layer(s).
 
 Notice that if both layers are bypassed you end up in classic *Hexagonal* (so called <a href='https://alistair.cockburn.us/hexagonal-architecture/'>Ports and Adapters</a>) approach where your presention IS your application.
 Check out how the integration with local storage is extracted to the **boundaries/local-storage** folder within the <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC sample</a>.
@@ -115,15 +115,15 @@ Let's take a look on the typical online shop. This is how it would be likely dra
       <li>
         If particular part is composed from multiple files - create a folder for it. 
         <ul>
-         <li><b>goods-list</b> is a part, and it consists from more than one file, so it have a dedicated folde. </li>
-         <li><b>Filters</b> is the part, consists from single file - so drop this file without creation of separate folder for it. </li>
+         <li><b>goods-list</b> is a part consting of more than one file, so it have a dedicated folde. </li>
+         <li><b>Filters</b> is the part consisting of a single file - so drop this file without creation of separate folder for it. </li>
         </ul>
       </li>
       <li>
-        If particular part (either one-file part or multiple-files part) is a <i>sub-part</i> - prefix it with the underscore <i>"_"</i> sign. This way, all <i>sub-parts</i> (child items) are pinned to the top of the folder in the files explorer.
+        If a particular part (either one-file part or multiple-files part) is a <i>sub-part</i> - prefix it with the underscore <i>"_"</i> sign. This way, all <i>sub-parts</i> (child items) are pinned to the top of the folder in the files explorer.
         <ul>
-            <li><b>goods-list folder</b> is a sub-part of <b>goods-catalogue</b> so it is prefixed with underscore.</li>
-            <li><b>_goods-list.js</b> relates directly to the folder it locates within, so it is not prefixed with underscore.</li>
+            <li><b>_goods-list folder</b> is a sub-part of <b>goods-catalogue</b> so it is prefixed with underscore.</li>
+            <li><b>goods-list.js</b> relates directly to the folder it locates within, so it is not prefixed with underscore.</li>
             <li><b>_good-details.js</b> is a sub-part of <b>goods-list</b> so it is not prefixed with underscore.</li>
         </ul>
       </li>
@@ -133,7 +133,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
 
 <p>
 Done! Once you get used to this approach, a brief look on every folder will let you instantly identify the <i>sub-parts</i> and open the file, used to assemble all these <i>sub-parts</i> together.
-Notice, that folder <b>pages</b> was renamed into the <b>components</b> on the last screenshot. It is done because <i>pages</i> and <i>page parts</i> are technically different things, but in html terms both can be called a <a href='https://developer.mozilla.org/en-US/docs/Web/Web_Components'>component</a>. So from here onvards, folder <i>components</i> become the main folder of our application and become a "home" for the presentation layer of SPA.
+Notice, that folder <b>pages</b> was renamed into the <b>components</b> on the last screenshot. It is done because <i>pages</i> and <i>page parts</i> are logically different things, but in html terms both can be called a <a href='https://developer.mozilla.org/en-US/docs/Web/Web_Components'>component</a>. So from here onvards, folder <i>components</i> become the main folder of our application and become a "home" for the presentation layer of SPA.
 </p>
 
 
@@ -150,7 +150,7 @@ Since the use of the transpiler is inevitable - there is no reason to restrict y
 Deep analisis of available options is out of the scope of this article, but my personal choice is the <a href='https://www.typescriptlang.org/'>TypeScript</a> because:
 - Provides compile-time types checking
 - Being a superset of JS, it can execute imported JS functions as a part of it's own codebase without any additional integration code.
-- Type definitions (typings) can be added on top of exisiting JavaScript codebase without affecting this codebase. Given the siplicity of adding the typings, majority of npm packages already have them and therefore almost every single third-party JavaScript library could be consumed by your application as TypeScript library. So most of the time integration with external libraries is also type-safe.
+- Type definitions (typings) can be added on top of existing JavaScript codebase without affecting this codebase. Given the simplicity of adding the typings, the majority of npm packages already have them and therefore almost every single third-party JavaScript library could be consumed by your application as a TypeScript library. So most of the time integration with external libraries is also type-safe.
 
 <span class='hint'>Hint: i'd suggest to take a look into <a href='http://asmjs.org/'>asm.js</a>, <a href='https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-5.0'>blazor</a> and <a href='https://elm-lang.org/'>elm</a> if you're interested in other options</span>
 
