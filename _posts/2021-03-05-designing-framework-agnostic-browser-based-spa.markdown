@@ -142,7 +142,7 @@ Notice, that folder <b>pages</b> was renamed into the <b>components</b> on the l
 The only language which can be executed in the browser is JavaScript.
 There are a lot of articles describing how cumbersome it is. You can <a href='https://www.destroyallsoftware.com/talks/wat'>laught about it (timecode 1-20)</a>, but it is just a funny part...
 
-What's important to notice is that new features are being constantly added to JavaScript. The <a href='https://tc39.es/ecma262/'>Specification</a> is being updated every year. All new features comes through the <a href='https://github.com/hemanth/es-next'>4-stages review process</a> before being pulled into the specification. But many times they are being adopted by browsers "before" reaching stage 4. And many times community and framework authors starts using features before they are being included into the specification. For example, <a href='https://github.com/tc39/proposal-decorators'>decorators</a> started being widely used in 2015, while still not being included in the specification. In the other hand, often times business requires an application to works in old browsers, lacking the support of newly introduced features.
+What's important to notice is that the new features are being constantly added to JavaScript. The <a href='https://tc39.es/ecma262/'>Specification</a> is being updated every year. All new features comes through the <a href='https://github.com/hemanth/es-next'>4-stages review process</a> before being pulled into the specification. But many times they are being adopted by browsers "before" reaching stage 4. And many times community and framework authors starts using features before they are being included into the specification. For example, <a href='https://github.com/tc39/proposal-decorators'>decorators</a> started being widely used in 2015, while still not being included in the specification. In the other hand, often times business requires an application to works in old browsers, lacking the support of newly introduced features.
 
 Therefore even if you are using plain JavaScript, you have to use a transpiler (babel) to make a "browser-compatible" JavaScript from the "wild-and-modern" JavaScript.
 Since the use of the transpiler is inevitable - there is no reason to restrict yourself from using another, more safe, more fancy and more useful language and compile it to JavaScript instead of using plain Javascript.
@@ -157,30 +157,30 @@ Deep analisis of available options is out of the scope of this article, but my p
 ### 6. Software design targets:
 
 Let's remember the limitations, applied by the browsers: HTML, CSS, JavaScript.
-Remember the file structure we want to have (chapter 4) - foldres tree which mirrors visual elements tree.
+Remember the file structure we want to have (chapter 4) - folders tree which mirrors visual elements tree.
 
-So the **first target [6.1]** for the presentation layer structure is to let the components being defined using HTML and CSS and then re-used.
+So the **first target [6.1]** is to let the components be defined using HTML and CSS and then re-used.
 
-One huge disadvantage of pure HTML is that it is not strictly typed. There are a plenty of templating engines, such as <a href='https://underscorejs.org/#template'>underscore.js</a>, <a href='https://handlebarsjs.com/'>handlebars.js</a> but they are designed to consume pure strings as an input. This prevents us from compile-time check on templates validity.
+One huge disadvantage of pure HTML is that it is not strictly typed. There are plenty of templating engines, such as <a href='https://underscorejs.org/#template'>underscore.js</a>, <a href='https://handlebarsjs.com/'>handlebars.js</a> but they are designed to consume pure strings as an input. This prevents us from compile-time check on templates validity.
 
 So the **second target [6.2]** is to ensure that we can define TypeScript interfaces to reflect all properties, used within the component. And then during compile-time throw an error if an unknown property is accessed within the component or an unknown attribute is defined on component in the html markup.
 
-Every UI element on the page might have different states based on *some data*"*. Native HTML elements receive this data as <a href='https://www.w3schools.com/html/html_attributes.asp'>html attributes</a>. This is enough for static markup. For dynamic markup we want to have the data storages with values, being changed while user is working with application.
+Every UI element on the page might have different states based on *some data*. Native HTML elements receive this data as <a href='https://www.w3schools.com/html/html_attributes.asp'>html attributes</a>. This is enough for static markup. For dynamic markup we want to have the data storages with values being changed while the user is working with the application.
 Same time, we shouldn't lose an ability to pass the data to components through the attributes.
 
-So the **third target [6.3]** is to let the components to consume data from both attributes and data stores. Let components being re-rendered when data is changed.
+So the **third target [6.3]** is to let the components to consume data from both attributes and data stores. Let components be re-rendered when data is changed.
 
 And the **fourth target [6.4]** - define data stores specification:
-- let the data stores be shared between different components in order to reuse single source of truth between multiple tiny UI components reflecting "parts" of the dataset.
+- let the data stores be shared between different components in order to reuse a single source of truth between multiple tiny UI components reflecting "parts" of the dataset.
 - let the data stores be created per-component in order to support scenarios where different components have separate datasets behind them.
 - let the data stores use domain and/or application services. In order to avoid tough coupling between the presentation layer and application boundaries, services shall be consumed using <a href='https://www.infoq.com/articles/Succeeding-Dependency-Injection/'>Dependency Injection</a>. Data stores should only rely on the interfaces. 
 
 
-Finally, we don't want the data in data stores being public so it can not be accidentally changed during the component's rendering or within the event handler, defined in the component. We want to keep components as dumb as possible and make them nothing complex than the strongly-typed-and-optimized-html-templates. In order to achieve this, let's keep the state of data stored encapsulated within this stores, exposing the methods for access/modification of such a state. In other words, let's define our stores in form of old-fashioned classes.
+Finally, we don't want the data in data stores being public so it can not be accidentally changed during the component's rendering or within the event handler, defined in the component. We want to keep components as dumb as possible and make them nothing complex than the strongly-typed-and-optimized-html-templates. In order to achieve this, let's keep the state of data stored encapsulated within these stores, exposing the methods for access/modification of such a state. In other words, let's define our stores as old-fashioned classes.
 
-Hovewer, as i've mentioned above, the data store might be shared as single source of truth by multiple tiny components.
+However, as I've mentioned above, the data store might be shared as a single source of truth by multiple tiny components.
 In this case we want to have a very explicit visibility of the data slice, consumed by concrete component. This serve: 
-1. Code readability (developer can guess the component purpose by seen data it receive).
+1. Code readability (developer can guess the component purpose by seeing data it receives).
 2. Performance (re-renders of the component could be avoided if data, not related to the effective data slice, is changed).
 
 So the **fifth target [6.5]** - let the data stores be defined as TypeScript classes, define mechanics to identify the slice of data, required by particular component.
@@ -188,7 +188,7 @@ So the **fifth target [6.5]** - let the data stores be defined as TypeScript cla
 With these targets in mind, let's define following logical pieces code units:
 - components - strongly typed html template + css stylesheet 
 - viewmodels - classes, encapsulating the state of the hierarchy down the component and exposing the methods for access/modification of such a state.
-- viewmodel facades - limit the visibility of viewmodel properties to ones, required by particular component.
+- viewmodel facades - limit the visibility of viewmodel properties to ones, required by a particular component.
 
 <div class="block-with-image-container block-with-image-container--medium">
   <div class='image-with-legend-container'>
@@ -200,10 +200,10 @@ With these targets in mind, let's define following logical pieces code units:
     <span class='image-legend'>Figure 6: desired design of presentation layer</span>
   </div>
   <ul>
-    <li>solid arrows reflects components being rendered by parent component, with attributes set supplied directly in the markup. </li>
-    <li>dashed arrows reflects code units being referenced by another code units.</li>
-    <li>blocks with green border - module boundaries. Each module/submodule is represented by dedicated folder. Shared modules lay within the "shared" folder.</li>
-    <li>blue blocks - viewmodels. viewmodels are defined "per module/submodule".</li>
+    <li>Solid arrows reflect components being rendered by parent components, with attributes set supplied directly in the markup. </li>
+    <li>Dashed arrows reflect code units being referenced by other code units.</li>
+    <li>Blocks with green border - module boundaries. Each module/submodule is represented by a dedicated folder. Shared modules lay within the "shared" folder.</li>
+    <li>Blue blocks - viewmodels. viewmodels are defined "per module/submodule".</li>
   </ul>
 </div>
 
@@ -217,7 +217,7 @@ With these targets in mind, let's define following logical pieces code units:
     <span class='image-legend'>Figure 7: attributes should be passed not only to the root component of module, but also to it's viewmodel</span>
   </div>
   <p>
-    Does we miss anything? Notice that the viewmodels on the figure 6 does not have any parameters. This is always true for the "top-level" or "global" viewmodels. But submodule viewmodels, as well as shared modules viewmodels may frequently rely on the parameters, defined during the application execution.
+    Don't we miss anything? Notice that the viewmodels on the figure 6 does not have any parameters. This is always true for the "top-level" or "global" viewmodels. But submodule viewmodels, as well as shared modules viewmodels may frequently rely on the parameters, defined during the application execution.
   </p>
   <p>
     So the <b>sixth target [6.6]</b> - let the attributes of the sub-module to be consumed by the viewmodel of this sub-module.
@@ -226,17 +226,17 @@ With these targets in mind, let's define following logical pieces code units:
 
 ### 7. Technical choices:
 
-I am going to use mainstream libraries in order to make this article easier for read. Hence there will not be detailed comparison of different options - more popular library will be used.
+I am going to use mainstream libraries in order to make this article easier to read. Hence there will not be a detailed comparison of different options - the most popular library will be used.
 
 #### 7.1. Components:
 
 We want to have a library, which would allow the strongly-typed html markup definition.
 This can be acheived by using tsx (typed <a href='https://reactjs.org/docs/introducing-jsx.html'>jsx</a>) syntax, supported by libraries such as <a href='https://reactjs.org/'>React</a>, <a href='https://preactjs.com/'>Preact</a> and <a href='https://infernojs.org/'>Inferno</a>.
-Tsx is **!not!** the pure html, hovewer it can be automatically converted to/from pure html so we are fine if at some moment we decide to switch into 'pure' html.
+Tsx is **NOT** the pure html, hovewer it can be automatically converted to/from pure html so we are fine if at some moment we decide to switch into 'pure' html.
 
-I order to reduce dependency on a particular library, let's limit views to be a pure functions, receiving attributes and returning JSX node. This is the approach proven by/stolen from early-days react's <a href='https://reactjs.org/docs/components-and-props.html'>functional components</a>. 
+In order to reduce dependency on a particular library, let's limit views to be a pure functions, receiving attributes and returning JSX node. This is the approach proven by/stolen from early-days react's <a href='https://reactjs.org/docs/components-and-props.html'>functional components</a>. 
 
-<span class='hint'>hint: durign the last few years react components have become side-effect-full with introduction of react hooks. This is a brand new story, hooks should not be used while working with the approach, described in this article.</span>
+<span class='hint'>hint: during the last few years react components have become side-effect-full with introduction of react hooks. This is a brand new story, hooks should not be used while working with the approach, described in this article.</span>
 
 In other terms, 'components' are stateless. Think about them through the simple equation `UI=F(S)` where 
 - **UI** - visible markup
@@ -270,9 +270,9 @@ const TodoItemDisconnected = (props: ITodoItemAttributes) => {
 This component is responsible for rendering of the single todo item within the <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC app</a>.
 
 The only dependency we have in this code is the dependency on the JSX syntax. So this component can be rendered by any library, which can render JSX markup.
-With this approach, replacement of particular library will still not come for free, but is manageable.
+With this approach, replacement of a particular library will still not come for free, but is manageable.
 
-So we handle **targets [6.1] and [6.2]**. Also, we keep the code of particular feature library-agnostic as we do not referencing any concrete library in this code.
+So we handle **targets [6.1] and [6.2]**.
 
 <span class='hint'>note: i am using react for referenced <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC demo application</a>.</span>
  
@@ -283,18 +283,18 @@ As it was mentioned in the chapter [6], we want ViewModels to be written as clas
 - Allow internal state encapsulation 
 - Account for integration with domain/application layers using the dependency injection principle.
 
-But classes do not have built in mechanics for automatic re-render of the components referencing the data, encapsulated by the concrete class instance.
+But classes do not have built in mechanics for automatic re-render of the components referencing the data, encapsulated by the class instance.
 
 We need something, called reactive UI. The comprehensive coverage of the principles can be found in <a href='https://github.com/meteor/docs/blob/version-NEXT/long-form/tracker-manual.md'>this doc</a>. This approach was initially introduced in WPF (C#) and was called <a href='https://docs.microsoft.com/en-us/archive/msdn-magazine/2009/february/patterns-wpf-apps-with-the-model-view-viewmodel-design-pattern#why-wpf-developers-love-mvvm'>Model-View-ViewModel</a>.
 In the JavaScript world, objects served as observable data sources are mostly called <a href='https://mobx.js.org/defining-data-stores.html'>stores</a> following the <a href='https://facebook.github.io/flux/'>flux</a> terminology.
-Hovewer, a **store** is a very generic term, it can define:
+However, a **store** is a very generic term, it can define:
 - Global data storage for the whole application
-- Domain object, encapsulating domain logic, neither bound to particular component, nor shared across thw whole application.
+- Domain object, encapsulating domain logic, neither bound to particular component, nor shared across the whole application.
 - Local data storage for a concrete component or components hierarchy
 
 So every viewmodel is a store, but not every store is viewmodel.
 
-Couple more limitations we want to apply on viewmodels.
+Couple more limitations we want to apply to viewmodels.
 - Code, related to reactivity, should not be blended with the feature-specific code. 
 - ViewModel shall not reference components and should now know that there are the compontens, referencing this viewmodel.
 
@@ -332,9 +332,9 @@ class TodosVM {
 
 Notice that we reference mobx directly, but decorators are never spilling through the method bodies.
 
-I'll show you how to abstract out the reactivity and remove dependency on mobx in the next article. For now it is enough to just prefix the decorators with the 'mobx' namespace. The moment developer might decide to change the reactivity providing library  - namespace might be replaced with the another one using automated script.
+I'll show you how to abstract out the reactivity and remove dependency on mobx in the next article. For now it is enough to just prefix the decorators with the 'mobx' namespace. The moment the developer decides to change the reactivity providing library  - namespace might be replaced with another one using an automated script.
 
-Also notice that ViewModel receive the first argument of type `unknown` in the constructor. This accounts to the **target [6.6]**. Given that `TodosVM` does not depends on any attributes, the type of props is `unknown`. But in order to generalize the ViewModel interface, its constructor shall always receive the first argument of the type matching an attributes of the root component of the (sub-)module:
+Also notice that ViewModel receives the first argument of type `{status: TodoStatus}` in the constructor. This accounts to the **target [6.6]**. The type is matching the attributes of <a href='https://github.com/DGrudzynskyi/todomvc-mobx-react-mvvm/blob/master/app/todo-mvc/todo-mvc.tsx'>the root component of the module</a>. Below is generalized ViewModel interface:
 
 {% highlight typescript %}
 interface IVMConstructor<TProps, TVM extends IViewModel<TProps>> {
