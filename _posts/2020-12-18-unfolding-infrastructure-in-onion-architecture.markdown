@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Unfolding infrastructure in the Onion architecture"
 date:   2020-12-18
 categories: architecture
