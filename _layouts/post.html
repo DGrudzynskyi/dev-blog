@@ -19,9 +19,9 @@ layout: default
     {{ content }}
   </div>
   
-  {% if page.comments %}
+  {%- if page.comments -%}
   {%- include comments.html -%}
-  {% endif %}
+  {%- endif -%}
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>

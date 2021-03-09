@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Framework-agnostic browser-based SPA"
 date:   2021-03-04
 categories: architecture
