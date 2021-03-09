@@ -42,7 +42,7 @@ So these applications could simply bypass *Domain* layer entirely and have a tin
 
 Subsequently, the most convenient way to understand the intent and the purpose of such an application is to get an overall picture of the presentation-related code.
 
-Hovewer, this article describes mechanics for usage of the *domain-* and *application-*level functions/classes if your application have such a layer(s).
+However, this article describes mechanics for usage of the *domain-* and *application-*level functions/classes if your application have such a layer(s).
 
 Notice that if both layers are bypassed you end up in classic *Hexagonal* (so called <a href='https://alistair.cockburn.us/hexagonal-architecture/'>Ports and Adapters</a>) approach where your presention IS your application.
 Check out how the integration with local storage is extracted to the **boundaries/local-storage** folder within the <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC sample</a>.
@@ -231,8 +231,8 @@ I am going to use mainstream libraries in order to make this article easier to r
 #### 7.1. Components:
 
 We want to have a library, which would allow the strongly-typed html markup definition.
-This can be acheived by using tsx (typed <a href='https://reactjs.org/docs/introducing-jsx.html'>jsx</a>) syntax, supported by libraries such as <a href='https://reactjs.org/'>React</a>, <a href='https://preactjs.com/'>Preact</a> and <a href='https://infernojs.org/'>Inferno</a>.
-Tsx is **NOT** the pure html, hovewer it can be automatically converted to/from pure html so we are fine if at some moment we decide to switch into 'pure' html.
+This can be achieved by using tsx (typed <a href='https://reactjs.org/docs/introducing-jsx.html'>jsx</a>) syntax, supported by libraries such as <a href='https://reactjs.org/'>React</a>, <a href='https://preactjs.com/'>Preact</a> and <a href='https://infernojs.org/'>Inferno</a>.
+Tsx is **NOT** the pure html, however it can be automatically converted to/from pure html so we are fine if at some moment we decide to switch into 'pure' html.
 
 In order to reduce dependency on a particular library, let's limit views to be a pure functions, receiving attributes and returning JSX node. This is the approach proven by/stolen from early-days react's <a href='https://reactjs.org/docs/components-and-props.html'>functional components</a>. 
 
@@ -349,13 +349,13 @@ interface IViewModel<IProps = Record<string, unknown>> {
 {% endhighlight %}
 
 Notice that all methods of `IViewModel` are optional. They might be declared on the viewmodel in case we want to ensure that:
-- Code is executed when viewmodel is created
-- Code is executed when viewmodel is deleted. JavaScript does not define the "deletion" of the object and we can't do anything at the moment object is being garbage-collected. I use word "deleted" to describe the ViewModel object, which is no more used by any component instance.
+- Code is executed when the viewmodel is created
+- Code is executed when the viewmodel is deleted 
 - Code is executed when attributes of the (sub-)module is changed
 
-Opposite to components, viewmodels are statefull. They are to be created once the module appears inside the DOM structure and deleted once module is removed from the DOM.
-And as it is shown in the figure 7, top level component of the module is an "entry" of the module.
-This drives us to the fact that viewmodel should be created when component instance is created(mounted) and deleted when it is deleted(unmounted). Let's handle this with the <a href='https://reactjs.org/docs/higher-order-components.html'>higher order components</a> technique.
+Opposite to components, viewmodels are statefull. They must be created once the module appears on a page and deleted once the module is removed from the page.
+And as it is shown in the figure 7, the **top level component** of the module is an "entry" of this module.
+So the viewmodel should be created when the component instance is created(mounted) and deleted when it is deleted(unmounted). Let's handle this with the <a href='https://reactjs.org/docs/higher-order-components.html'>higher order components</a> technique.
 
 
 
@@ -370,7 +370,7 @@ Consider having the function of following signature:
 
 such a function shall return a higher order component over the `moduleRootComponent` which:
 - must ensure that the viewmodel is created before the creation (and mounting) of the component.
-- must ensure that viewmodel is cleaned up (aka deleted) when component is being unmounted from components tree.
+- must ensure that the viewmodel is cleaned up (aka deleted) when the component is being unmounted.
 
 You can check the <a href='https://github.com/DGrudzynskyi/todomvc-mobx-react-mvvm/blob/master/app/framework-extensions/with-vm.tsx'>implementation</a> used for referenced <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC app</a>.
 This implementation is a bit more complex than described one in order to handle custom IoC container and re-creation of the viewmodel in responce to attribute changes.
@@ -389,16 +389,16 @@ const TodoMVCDisconnected = (props: { status: TodoStatus }) => {
 const TodoMVC = withVM(TodoMVCDisconnected, TodosVM);
 {% endhighlight %}
 
-Within the markup of application entry page (or root router, whatever you prefere) it is to be called as `<TodoMVC status={statusReceivedFromRouteParameters} />`
+Within the markup of application entry page (or root router, whatever you prefer) it is to be called as `<TodoMVC status={statusReceivedFromRouteParameters} />`
 After that, instance of `TodosVM` becomes accessible by components down the component hierarchy.
 
-Notice that `withVM` hides the implementaion details of the viewmodel creation and passing down the components hierarchy.  
+Notice that `withVM` hides the implementation details of the viewmodel creation and passing down the components hierarchy.  
 
 - `TodoMVCDisconnected` component is library-agnostic
 - `TodoMVC` component can be rendered within the library-agnostic component
 - `TodosVM` reference only mobx decorators, and it is something which could be easily abstracted out but not in scope of this article
 
-<span class='hint'>note: in the provided implementation, `withVM` function rely on the react context API, but you may experiment to find the better-faster-stronger way to implement it.
+<span class='hint'>note: in the provided implementation, `withVM` function relies on the react context API, but you may experiment to find a better-faster-stronger way to implement it.
 What's important is that implementation shall be done in conjunction with the implementation of `connectFn` (mentioned in the next chapter) in order to ensure that the same viewmodel is reused across all components within the components hierarchy. </span>
  
 #### 7.3. ViewModel facades.
@@ -413,7 +413,7 @@ What's important is that implementation shall be done in conjunction with the im
     <span class='image-legend'>Figure 8: passing the component's attributes 'IWidgetAttrs2' to the viewmodel facade (aka slicing function)</span>
   </div>
   <p>
-    Take a look on the figure 6 within the chapter 6. <a href='https://en.wikipedia.org/wiki/Facade_pattern'>Facade</a> define the class, exposing the subset of the wrapped module instead of its complete interface.
+    <a href='https://en.wikipedia.org/wiki/Facade_pattern'>Facade</a> define the class, exposing the subset of the wrapped module instead of its complete interface.
     Hovewer, creation of the additional classes to wrap the ViewModel is quite verbose.
   </p>
   <p>
@@ -427,7 +427,7 @@ What's important is that implementation shall be done in conjunction with the im
 type TViewModelFacade = <TViewModel, TOwnProps, TVMProps>(vm: TViewModel, ownProps?: TOwnProps) => TVMProps
 {% endhighlight %}
 
-Looks very similar to the Redux's <a href='https://react-redux.js.org/api/connect'>connect function</a>. But instead of `mapStateToProps`, `mapDispatchToActions` and `mergeProps` we have single function to return both 'state' and 'actions' from the viewmodel. 
+Looks very similar to Redux's <a href='https://react-redux.js.org/api/connect'>connect function</a>. But instead of `mapStateToProps`, `mapDispatchToActions` and `mergeProps` we have a single function to return both 'state' and 'actions' from the viewmodel. 
 Here is the slicing function from provided TodoMVC example: 
 
 {% highlight typescript %}
@@ -439,11 +439,11 @@ const sliceTodosVMProps = (vm: TodosVM, ownProps: {id: string, name: string, sta
 }
 {% endhighlight %}
 
-<span class='hint'>notice: i am calling component's attributes as 'OwnProps' to align it with terminology, widely spread in the react/redux world.</i>
+<span class='hint'>notice: I am calling component's attributes as 'OwnProps' to align it with terminology, widely spread in the react/redux world.</span>
 
-This similarity drives us to the most convenient way of utilizing such a slicing functions within the components tree - using the higher order components.
-Assume viewmodel is already hosted up the components hierarhy by using HOC, generated by `withVM` function.
-Let's define a signature of a function, which receive slicing function and the component and return higher-order component, bound to such a ViewModel.
+This similarity drives us to the most convenient way of utilizing such slicing functions within the components tree - using the higher order components.
+Assume that the viewmodel is already hosted up the components hierarсhy by using HOC, generated by `withVM` function.
+Let's define a signature of a function, which receives slicing function and the component and returns a higher-order component, bound to such a ViewModel.
 
 {% highlight typescript %}
 type connectFn = <TViewModel, TVMProps, TOwnProps = {}>
@@ -455,17 +455,16 @@ type connectFn = <TViewModel, TVMProps, TOwnProps = {}>
 const TodoItem = connectFn(TodoItemDisconnected, sliceTodosVMProps);
 {% endhighlight %}
 
-Rendering of such an item within the items list: `<TodoItem id={itemId} name={itemName} status={itemStatue} />`
+Rendering of such an item within the items list: `<TodoItem id={itemId} name={itemName} status={itemStatus} />`
 
-Notice that `connectFn` hides the implementaion details of the reactivity. 
+Notice that `connectFn` hides the implementation details of the reactivity. 
 - It takes the component `TodoItemDisconnected` and slicing function `sliceTodosVMProps` - both unaware of the reactivity library and JSX rendering library. 
 - It returns the component, which will be re-rendered reactively once the data, encapsulated by ViewModel, is modified.
 
 You can check the actual implementation of  <a href='https://github.com/DGrudzynskyi/todomvc-mobx-react-mvvm/blob/master/app/framework-extensions/create-connect.tsx'>connectFn in the</a> TodoMVC app.
 
-### 8. Conslusion:
+### 8. Conclusion:
 
-What is the most intricated part part about the designed code structure?
 All features-related code is written using the framework-agnostic syntax. 
 Typescript objects, typescript functions, TSX - that's all we are bound to.
 
@@ -475,35 +474,34 @@ Guess that after reading this article you might see the benefits of working on S
 In order to remove references to mobx, react and mobx-react from presentation layer, we should do slightly more:
 - Abstract out mobx decorators
 - Abstract out every framework-dependant library, used by the presentation layer.
-For example rovided <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC sample</a> rely on the react-router/react-router-dom libraries.
+For example provided <a href='https://dgrudzynskyi.github.io/todomvc-mobx-react-mvvm/'>TodoMVC sample</a> rely on the react-router/react-router-dom libraries.
 - Abstract out the synthetic events signatures, specific to particular JSX rendering engine. 
 
 First two items are easily manageable and I'll show you how to handle them in the further articles. 
-Third one is kind of different beast. Such an abstraction means that we are going to build yet another framework, but without tests coverage, community support and all that things that matters.
+But synthetic events abstraction means that we are going to build yet another framework, which would not have the community support behind it.
 
-I am pragmatically chosing to keep referencing react's synthetic events signatures in mine components.
-Such approach makes swithing out of the react or of the mobx a manageable task. 
-Even though switching our of the react will require some work, this work will be localized within the particular components and will not spill through to viewmodels or slicing functions.
+I am pragmatically choosing to keep referencing react's synthetic events signatures in mine components.
+So switching out of the react will require some work, but this work will be localized within the particular components and will not spill through viewmodels or slicing functions.
 
 
 ### P.S. Comparison of the suggested structure and it's implementation to main popular development frameworks:
 
-- Comparing to <a href='https://react-redux.js.org/'>React/Redux</a> combo: ViewModels replace *reducers*, *action creators* and *middlewares*. ViewModels ARE stateful. No time-travel. Multiple stores. No performance issues caused by excessive connect function usages with some logic inside. Redux-dirven app tends to become slower over time while more and more connected components are being added to application, so there is no evident bottleneck to fix. Slicing function implementation given in the example is not affected by this issue, cudos to <a href='https://mobx.js.org/understanding-reactivity.html'>mobx dependencies tracking</a>. Alhough, it can be acheived with another reactive UI library as well.
+- Compared to <a href='https://react-redux.js.org/'>React/Redux</a> combo: ViewModels replace *reducers*, *action creators* and *middlewares*. ViewModels ARE stateful. No time-travel. Multiple stores. No performance issues caused by excessive connect function usages with some logic inside. Redux-dirven apps tend to become slower over time while more and more connected components are being added to application, so there is no evident bottleneck to fix. Slicing function implementation given in the example is not affected by this issue, kudos to <a href='https://mobx.js.org/understanding-reactivity.html'>mobx dependencies tracking</a>. Although, it can be achieved with another reactive UI library as well.
 
-- Comparing to <a href='https://vuejs.org/'>vue</a>: Strongly typed views cudos to TSX. Viewmodels are native class instances without framework-specific syntax blended in. Vue.js force the definition of state to be done within <a href='https://vuejs.org/v2/api/#Options-Data'>the objects of specific structure</a> having 'data','methods', etc. properties.  Absence of vue-specific directives and model binding syntax.
+- Compared to <a href='https://vuejs.org/'>vue</a>: Strongly typed views cudos to TSX. Viewmodels are native class instances without framework-specific syntax blended in. Vue.js forces the definition of state to be done within <a href='https://vuejs.org/v2/api/#Options-Data'>the objects of specific structure</a> having 'data','methods', etc. properties.  Absence of vue-specific directives and model binding syntax.
 
-- Comparing to <a href='https://angular.io/'>angular</a>: Strongly typed views cudos to TSX. Absence of angular-specific directives and model binding syntax within the html. Prevent views from direct manipulations on the state (aka on the component public fields, aka two-way data binging). Hint: for some scenarios (such as forms) two way data binding might be preferred.
+- Compared to <a href='https://angular.io/'>angular</a>: Strongly typed views kudos to TSX. Absence of angular-specific directives and model binding syntax within the html. Prevent views from direct manipulations on the state (aka on the component public fields, aka two-way data binding). Hint: for some scenarios (such as forms) two way data binding might be preferred.
  
-- Comparing to pure react with state managed through hooks (such as <a href='https://reactjs.org/docs/hooks-state.html'>useState</a>/useContext): better separation of concerns. VMs could be threaten like the container components, hovewer they do not render anything and subsequently it is much harder to mess up the state management logic and UI code. 
+- Compared to pure react with state managed through hooks (such as <a href='https://reactjs.org/docs/hooks-state.html'>useState</a>/useContext): better separation of concerns. VMs could be meant like the container components, however they do not render anything and subsequently it is much harder to mess up the state management logic and UI code. 
 
-  Avoid the neccessity to care about hooks sequence, about keeping the useEffects dependencies tracked in the 'deps' array, about keeping an information about whether the component is still mounted when asyn action is completed, about making sure closures from 'previous' renders are not suddenly used during effect execution. 
+  Avoid the necessity to care about hooks sequence, about keeping the useEffects dependencies tracked in the 'deps' array, about managing component's mount status with regards to async actions, about making sure closures from 'previous' renders are not suddenly used during effect execution. 
 
-  As any other tech, hooks (and in particular - useEffect) requires developer to follow some recommendations (not declared in the interface, but accepted as a 'approach', 'mental model' or 'best practices'). There is a nice <a href='https://overreacted.io/a-complete-guide-to-useeffect/'>guide to useEffect</a> from one of react team members. Read it and then answer two questions: 
-  - What do you acheive with hooks? 
-  - How many rules, not controlled by compiler and hardly tracked by linter/visual code review, should be followed by developer while working with hooks in order to make them predictable? 
-    Once the second list exceedes the first one by a huge margin - it is a good sign to me that an approach should be considered with a huge caution. <span class='hint'>hint: tiny bit of <a href='https://blog.logrocket.com/frustrations-with-react-hooks/'>frustration</a> about hooks</span>
+  As any other tech, hooks (and in particular - useEffect) requires developer to follow some recommendations (not declared in the interface, but accepted as a 'approach', 'mental model' or 'best practices'). There is a nice <a href='https://overreacted.io/a-complete-guide-to-useeffect/'>guide to useEffect</a> from one of the react team members. Read it and then answer two questions: 
+  - What do you achieve with hooks? 
+  - How many rules, not controlled by the compiler and hardly tracked by linter/visual code review, should be followed by the developer while working with hooks in order to make them predictable? 
+    Once the second list exceeds the first one by a huge margin - it is a good sign to me that an approach should be considered with a huge caution. <span class='hint'>hint: tiny bit of <a href='https://blog.logrocket.com/frustrations-with-react-hooks/'>frustration</a> about hooks</span>
 
-- Comparing to <a href='https://mobx.js.org/react-integration.html'>react-mobx integration</a>.
+- Compared to <a href='https://mobx.js.org/react-integration.html'>react-mobx integration</a>.
 Code structuring is not defined within the shipped in react-mobx docs. It is up to the development team. You may consider an approach, described in this article as an approach to structure the application written with react for rendering and mobx for state management.
 
-- Comparing to <a href='https://mobx-state-tree.js.org/'>mobx-state-tree</a>: Viewmodels are native class instances without framework-specific syntax blended in. Mobx-state-tree <a href='https://mobx-state-tree.js.org/concepts/trees'>types definitions</a> heavily rely on the framework specific syntax. Mobx-state-tree may force the duplication of code while declaring the types because properties of particular type should be described both in the typescript interface and in the model definition.
+- Compared to <a href='https://mobx-state-tree.js.org/'>mobx-state-tree</a>: Viewmodels are native class instances without framework-specific syntax blended in. Mobx-state-tree <a href='https://mobx-state-tree.js.org/concepts/trees'>types definitions</a> heavily rely on the framework specific syntax. Mobx-state-tree may force the duplication of code while declaring the types because properties of concrete type should be described both in the typescript interface and in the model definition.
