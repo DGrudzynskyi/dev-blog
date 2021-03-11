@@ -116,7 +116,7 @@ Let's take a look on the typical online shop. This is how it would be likely dra
       <li>
         If particular part is composed from multiple files - create a folder for it. 
         <ul>
-         <li><b>goods-list</b> is a part consting of more than one file, so it have a dedicated folde. </li>
+         <li><b>goods-list</b> is a part consiting of more than one file, so it have a dedicated folder. </li>
          <li><b>Filters</b> is the part consisting of a single file - so drop this file without creation of separate folder for it. </li>
         </ul>
       </li>
