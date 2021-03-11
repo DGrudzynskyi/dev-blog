@@ -72,7 +72,7 @@ Let’s look on a couple of definitions:
       Mark Seeman in the “Dependency Injection in .NET”, chapter 2, draw layers without something called “infrastructure”, effectively bypassing this piece of the software as well. He only focusing on analysis of <i>data access</i> as a crucial piece of infrastructure.
     </p>
     <p>
-The quick essence of that chapter is given in the Mark’s <a href='https://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/'>article</a>. This article also nicely aligns <i>layered</i>, <i>onion</i>, and <i>ports and adapters</i> architectures, so i recomment you to read it before proceeding with current article.
+The quick essence of that chapter is given in the Mark’s <a href='https://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/'>article</a>. This article also nicely aligns <i>layered</i>, <i>onion</i>, and <i>ports and adapters</i> architectures, so i recommend you to read it before proceeding with current article.
     </p>
 </div>
 
