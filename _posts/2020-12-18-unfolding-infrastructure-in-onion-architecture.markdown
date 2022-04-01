@@ -5,6 +5,7 @@ title:  "Unfolding infrastructure in the Onion architecture"
 date:   2020-12-18
 categories: architecture
 tags: architecture, onion, ports-and-adapters, hexagonal, layered, coreutils, clean, infrastructure
+description: Exploration of the infrastructure layer within the mainstream architectural approaches - layered, onion, clean, ports and adapters
 ---
 
 - _Stuck trying to figure out where to place your code without tricking an existing **software architecture**?_

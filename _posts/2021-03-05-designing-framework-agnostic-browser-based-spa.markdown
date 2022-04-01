@@ -4,7 +4,8 @@ comments: true
 title:  "Framework-agnostic browser-based SPA"
 date:   2021-03-04
 categories: architecture
-tags: architecture, js, ts, javascript, typescript, ports-and-adapters, hexagonal, layered, onion, mobx, react
+tags: architecture, js, ts, javascript, typescript, ports-and-adapters, hexagonal, layered, onion, mobx, react, patterns
+description: Architectural patterns for the framework-independent JavaScript in-browser application
 ---
 
 ### 1. But... why? 
